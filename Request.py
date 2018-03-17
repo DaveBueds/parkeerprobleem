@@ -2,6 +2,8 @@ class Request(object):
 
     #de data die binnekomt van CSV is van type str --> CASTEN!
 
+    toegewezenVoertuig = None
+
     def __init__(self, id, zone, dag, startTijd, duurTijd, vehicleList, penalty1, penalty2):
         self.id = int(id)
         self.zone = int(zone)
@@ -22,3 +24,7 @@ class Request(object):
                " penalty1: ", self.penalty1,
                " penalty2: ", self.penalty2
                )
+
+    def reqToVehicle(self, toegewezenVoertuig):
+        self.toegewezenVoertuig = toegewezenVoertuig
+        print("Request ", self.id, " heeft voertuig ", self.toegewezenVoertuig)

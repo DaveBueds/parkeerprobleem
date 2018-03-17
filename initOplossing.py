@@ -15,17 +15,20 @@ def initOplossing(obj):
     #neem eerste request in tijd
     print ("Eerste req in tijd: ", obj[0][0].id)
     for req in requests:
-        print("Reqloop: ", req.printReq())
         if controleOfReqWagenHeeft(req):
             #Request heeft wagen
-            print("Request heeft wagen")
-            controleWagenBezet(req, vehicles)
+            print("Request", req.id ," heeft wagen(s), van: ", req.startTijd, "tot ", req.startTijd+req.duurTijd)
+            wagenVrij = controleWagenBezet(req, vehicles)
+            if not wagenVrij == None:
+                req.reqToVehicle(wagenVrij)
+            else:
+                print("GEEN WAGEN GEVONDEN VOOR req", req.id)
 
         else:
             print("ERROR: Request heeft geen wagen.")
         print ("\n")
 
-
+"""Controleert of een request een lijst van wagens heeft, indien niet fout opvangen"""
 def controleOfReqWagenHeeft(req):
     if not len(req.verhicleList) == 0:
         return True
@@ -33,13 +36,26 @@ def controleOfReqWagenHeeft(req):
         #request heeft geen wagen
         return False
 
+"""Controleert of er een wagen in de lijst van de request beschikbaar is"""
 def controleWagenBezet(req, vehicles):
-    print("Controle slot wagen vrij")
+    #loop door vehicle list
     for index, auto in enumerate(req.verhicleList):
-        print(index, auto)
-        #als wagen op slot
+        #print(index, auto)
+
+        #print("Wagen bezet tot: ",vehicles[auto].isWagenNogBezet())
+        if vehicles[auto].isWagenNogBezet() <= req.startTijd:
+            #Controleren of wagen beschikbaar is nadat hij reeds gereserveerd is geweest
+            #controle of er geen overlap zit in de tijd
+            vehicles[auto].wagenAfSlot()
+
         if not vehicles[auto].wagenBezet: #wagen is niet bezet
-            print("Wagen is vrij")
-            vehicles[auto].wagenOpSlot()
+            #print("Wagen ", vehicles[auto].vehicle ," is vrij")
+            bezetTot = req.startTijd + req.duurTijd
+            vehicles[auto].wagenOpSlot(bezetTot)
+            return vehicles[auto].vehicle
+            break
         else:
-            print("Wagen is niet vrij")
+            #print("Wagen ", vehicles[auto].vehicle ," is niet vrij")
+            pass
+    #Indien geen vrij gevonden voertuig gevonden return None
+    return None
