@@ -28,3 +28,7 @@ class Request(object):
     def reqToVehicle(self, toegewezenVoertuig):
         self.toegewezenVoertuig = toegewezenVoertuig
         print("Request ", self.id, " heeft voertuig ", self.toegewezenVoertuig)
+
+    def getReqToVehicle(self):
+        #print("Request ", self.id, " heeft voertuig ", self.toegewezenVoertuig)
+        return self.id, self.toegewezenVoertuig

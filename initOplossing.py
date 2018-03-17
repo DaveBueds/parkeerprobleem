@@ -28,6 +28,8 @@ def initOplossing(obj):
             print("ERROR: Request heeft geen wagen.")
         print ("\n")
 
+
+
 """Controleert of een request een lijst van wagens heeft, indien niet fout opvangen"""
 def controleOfReqWagenHeeft(req):
     if not len(req.verhicleList) == 0:
@@ -35,6 +37,8 @@ def controleOfReqWagenHeeft(req):
     else:
         #request heeft geen wagen
         return False
+
+
 
 """Controleert of er een wagen in de lijst van de request beschikbaar is"""
 def controleWagenBezet(req, vehicles):
