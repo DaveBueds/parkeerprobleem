@@ -32,3 +32,6 @@ class Request(object):
     def getReqToVehicle(self):
         #print("Request ", self.id, " heeft voertuig ", self.toegewezenVoertuig)
         return self.id, self.toegewezenVoertuig
+
+    def reqToVehicleUnassign(self):
+        self.toegewezenVoertuig = None

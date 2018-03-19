@@ -75,7 +75,7 @@ def readCSV(filenaam):
 
             if vehiclesToObject:
                 vehicle = Vehicle(neemGetal(row[0]))
-                #vehicle.printVehicle()
+                vehicle.printVehicle()
                 vehicleList.append(vehicle)
 
     csvfile.close()

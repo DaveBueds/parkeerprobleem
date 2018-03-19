@@ -8,7 +8,6 @@ def initOplossing(obj):
     zones = obj[1]
     vehicles = obj[2]
 
-
     #sorteer lijst op tijd (van klein naar groot)
     requests.sort(key=lambda x: x.startTijd, reverse=False)
 
@@ -21,8 +20,14 @@ def initOplossing(obj):
             wagenVrij = controleWagenBezet(req, vehicles)
             if not wagenVrij == None:
                 req.reqToVehicle(wagenVrij)
+                #vehicle to Zone
+                if vehToZone(req, vehicles):
+                    pass
+                else:
+                    req.reqToVehicleUnassign()
             else:
                 print("GEEN WAGEN GEVONDEN VOOR req", req.id)
+
 
         else:
             print("ERROR: Request heeft geen wagen.")
@@ -63,3 +68,18 @@ def controleWagenBezet(req, vehicles):
             pass
     #Indien geen vrij gevonden voertuig gevonden return None
     return None
+
+def vehToZone(req, vehicles):
+    rv = req.getReqToVehicle()
+
+    auto = vehicles[rv[1]].getVehicle()
+    print("auto: ", auto)
+    #controle zone van request, plaats voertuig in die zone
+    #controle op vehicle in zone
+    print("AZ: ", auto.zone)
+    if auto.zone == None:
+        auto.vehicleToZone(req)
+        return True
+    else:
+        print("CONFLICT VEH TO ZONE")
+        return False
