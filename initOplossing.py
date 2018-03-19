@@ -73,13 +73,14 @@ def vehToZone(req, vehicles):
     rv = req.getReqToVehicle()
 
     auto = vehicles[rv[1]].getVehicle()
-    print("auto: ", auto)
+    #print("auto: ", auto)
+
     #controle zone van request, plaats voertuig in die zone
     #controle op vehicle in zone
-    print("AZ: ", auto.zone)
+    #print("AZ: ", auto.zone)
     if auto.zone == None:
         auto.vehicleToZone(req)
         return True
     else:
-        print("CONFLICT VEH TO ZONE")
+        #print("CONFLICT VEH TO ZONE")
         return False
