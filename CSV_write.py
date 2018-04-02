@@ -24,8 +24,9 @@ def writeCSV(filenaam, obj):
             # Niet toegewezen voertuigen aan random zone toewijzen-> anders werkt validator niet
             # number of vehicle assignments does not match the number of vehicles in input
 
-            #vehicle aan random zone toewijzen
-            vzstring = "car"+str(veh.vehicle)+";z0\n"
+            #vehicle aan random zone toewijzen (hier zone 0)
+            veh.zone = 0
+            vzstring = "car"+str(veh.vehicle)+";z"+str(veh.zone)+"\n"
             fw.write(vzstring)
             continue
         else:
@@ -55,11 +56,6 @@ def writeCSV(filenaam, obj):
     fw.write("+Unassigned requests\n")
     for uv in unassignedRequests:
         fw.write("req"+str(uv)+"\n")
-
-
-    for zone in zones:
-        print(zone.buurzones)
-
     fw.close()
 
 
