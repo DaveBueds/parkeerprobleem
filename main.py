@@ -13,7 +13,7 @@ def main():
     print("Welkom op het Cambio parkeer optimalisatie algoritme")
     print("We beginnen met het inlezen van de csv file, gelieve deze in dezelfde folder te plaatsen als het main script")
     #filenaam = input("Geef de filenaam van de csv: ")
-    filenaam = "toy1.csv"
+    filenaam = "inputfile/toy1.csv"
     print("filenaam: ", filenaam)
     print("-------------------------", "\n")
 
@@ -26,7 +26,7 @@ def main():
 
     print("\n" + "Schrijven naar csv")
     #filenaamWrite = input("Geef de filenaam van de csv waarnaar u wil schrijven: ")
-    filenaamWrite = "test.csv"
+    filenaamWrite = "outputfile/test.csv"
     print("-------------------------", "\n")
     writeCSV(filenaamWrite, obj)
 

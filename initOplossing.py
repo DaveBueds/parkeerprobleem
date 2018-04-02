@@ -31,7 +31,7 @@ def initOplossing(obj):
 
         else:
             print("ERROR: Request heeft geen wagen.")
-        print ("\n")
+        print("\n")
 
 
 
@@ -74,13 +74,11 @@ def vehToZone(req, vehicles):
 
     auto = vehicles[rv[1]].getVehicle()
     #print("auto: ", auto)
-
     #controle zone van request, plaats voertuig in die zone
     #controle op vehicle in zone
-    #print("AZ: ", auto.zone)
     if auto.zone == None:
         auto.vehicleToZone(req)
         return True
     else:
-        #print("CONFLICT VEH TO ZONE")
+        #Conflict: vehicle to zone
         return False

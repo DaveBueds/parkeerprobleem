@@ -70,7 +70,7 @@ def readCSV(filenaam):
 
             if zonesToObject:
                 zone = Zone(neemGetal(row[0]))
-                #zone.printZone()
+                zone.printZone()
                 zoneList.append(zone)
 
             if vehiclesToObject:
