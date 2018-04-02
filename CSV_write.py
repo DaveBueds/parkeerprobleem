@@ -56,7 +56,14 @@ def writeCSV(filenaam, obj):
     for uv in unassignedRequests:
         fw.write("req"+str(uv)+"\n")
 
+
+    for zone in zones:
+        print(zone.buurzones)
+
     fw.close()
+
+
+
 
 
 def kostfunctie(requests, vehicles):

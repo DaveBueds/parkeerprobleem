@@ -69,7 +69,11 @@ def readCSV(filenaam):
                 requestList.append(request)
 
             if zonesToObject:
-                zone = Zone(neemGetal(row[0]))
+                buurzones = row[1].split(',')
+                buurzones_int = []
+                for i in buurzones:
+                    buurzones_int.append(int(neemGetal(i)))
+                zone = Zone(neemGetal(row[0]), buurzones_int)
                 zone.printZone()
                 zoneList.append(zone)
 
