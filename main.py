@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-import sys, optparse
+import sys, optparse, multiprocessing, time
 
-
-from CSV_read import readCSV
-from CSV_write import writeCSV
-
+from csv_read import readCSV
+from csv_write import writeCSV
 from initOplossing import initOplossing
+from localSearch import localSearch
 
 from Request import Request
 from Zone import Zone
@@ -16,7 +15,6 @@ from Vehicle import Vehicle
 
 
 def main(argv):
-    #print('ARGV:', sys.argv[1:])
     parser = optparse.OptionParser(
         "usage: %prog -i <input_file> -o <solution_file> [-t <time_limit>] [-r <random_seeds>] [-n <num_threads>]")
 
@@ -69,28 +67,34 @@ def main(argv):
 
     print("\n" + "Initieële oplossing aan het bepalen")
     print("-------------------------", "\n")
-    initOplossing(obj)
+    startOpl = initOplossing(obj)
+
+    print("\n" + "Optimaliseren")
+    print("-------------------------", "\n")
+    localSearch(startOpl, 60, 300)
 
     print("\n" + "Schrijven naar csv")
     filenaamWrite = outputfile
     print("-------------------------", "\n")
     writeCSV(filenaamWrite, obj)
 
-    print("\n" + "Optimaliseren")
-    print("-------------------------", "\n")
-    """
-    requests = obj[0]
-    zones = obj[1]
-    vehicles = obj[2]
-    print("Vehicle assignments:")
-    for veh in vehicles:
-        auto = veh.getVehicleToZone()
-        print("car", auto[0], ";z:", auto[1])
 
-    print("\nVehicle assignments:")
-    for req in requests:
-        rv = req.getReqToVehicle()
-        print("r", rv[0], ";v:", rv[1])
+
+    """
+    # Start localsearch als proces
+    p = multiprocessing.Process(target=localSearch, name="LocalSearch", args=(obj, 10,))
+    p.start()
+
+    # Wait a maximum of x seconds for localsearch
+    # Usage: join([timeout in seconds])
+    p.join(10)
+
+    # Controle indien thread al uit zichzelf is gestopt
+    if p.is_alive():
+        # Terminate localseach
+        p.terminate()
+        p.join()
+
     """
 
 

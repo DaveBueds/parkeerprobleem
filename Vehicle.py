@@ -29,9 +29,13 @@ class Vehicle(object):
 
     def vehicleToZone(self, req):
         self.zone = req.zone
-        #print("Req ",req.id, "ToZone: ", req.zone, "car: ", self.vehicle)
+        print("Req ",req.id, "ToZone: ", req.zone, "car: ", self.vehicle)
         return self.vehicle, self.zone
 
     def getVehicleToZone(self):
         #print("Request ", self.id, " heeft voertuig ", self.toegewezenVoertuig)
+        return self.vehicle, self.zone
+
+    def swapVehicleToZone(self, buurzone):
+        self.zone = buurzone
         return self.vehicle, self.zone

@@ -2,6 +2,10 @@ from Request import Request
 from Zone import Zone
 from Vehicle import Vehicle
 
+from kostfunctie import kostfunctie
+from localSearch import localSearch
+
+
 unassignedRequests = []
 
 def writeCSV(filenaam, obj):
@@ -20,7 +24,7 @@ def writeCSV(filenaam, obj):
     #sorteren op voertuig oplopend
     for veh in vehicles:
         if veh.zone == None:
-            unassignedRequests.append(veh.vehicle)
+            #unassignedRequests.append(veh.vehicle)
             # Niet toegewezen voertuigen aan random zone toewijzen-> anders werkt validator niet
             # number of vehicle assignments does not match the number of vehicles in input
 
@@ -62,32 +66,6 @@ def writeCSV(filenaam, obj):
 
 
 
-def kostfunctie(requests, vehicles):
-    totaleKost = 0
 
-    for index, req in enumerate(requests):
-        autoInt = req.toegewezenVoertuig
-        print("r:",req.id,"V:",req.toegewezenVoertuig)
-        if autoInt == None: #Dan zit hij in unassigned
-            print("Req heeft geen toegewezen voertuig")
-            # per unassigned request penalty van 100
-            totaleKost += req.penalty1
-
-        else:
-            auto = vehicles[autoInt].getVehicle()
-
-            if auto.zone == None:
-                print("Vehicle heeft geen zone")
-                continue
-
-            # als req.zone == veh.zone, geen penalty van 20
-            elif auto.zone == req.zone:
-                print("Geen penalty")
-            else: #anders penalty van 20
-                print("Penalty: ", req.penalty2)
-                continue
-
-    print("Totale Kost: ", totaleKost)
-    return totaleKost
 
 
