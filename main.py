@@ -1,12 +1,18 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-import sys, optparse, multiprocessing, time
+import sys, optparse, time
+
+from time import sleep
+
+from threading import Thread
+
 
 from csv_read import readCSV
 from csv_write import writeCSV
 from initOplossing import initOplossing
-from localSearch import localSearch
+from optimize import optimize
+
 
 from Request import Request
 from Zone import Zone
@@ -62,42 +68,33 @@ def main(argv):
     print("filenaam: ", inputfile)
     print("-------------------------", "\n")
 
+    start = time.time() #meet tijd programma
+
     obj = readCSV(inputfile)
     print("-------------------------", "\n")
 
     print("\n" + "Initieële oplossing aan het bepalen")
     print("-------------------------", "\n")
-    startOpl = initOplossing(obj)
+    initieleOpl = True
+    startOpl = initOplossing(obj, initieleOpl)
 
     print("\n" + "Optimaliseren")
     print("-------------------------", "\n")
-    localSearch(startOpl, 60, 300)
+    # localSearch(startOpl, 60, 300)
+    opt = optimize(startOpl, timelimit)
 
     print("\n" + "Schrijven naar csv")
     filenaamWrite = outputfile
     print("-------------------------", "\n")
-    writeCSV(filenaamWrite, obj)
+    writeCSV(filenaamWrite, opt)
 
+    end = time.time()
+    print("Tijd verstreken: ", end - start)
 
-
-    """
-    # Start localsearch als proces
-    p = multiprocessing.Process(target=localSearch, name="LocalSearch", args=(obj, 10,))
-    p.start()
-
-    # Wait a maximum of x seconds for localsearch
-    # Usage: join([timeout in seconds])
-    p.join(10)
-
-    # Controle indien thread al uit zichzelf is gestopt
-    if p.is_alive():
-        # Terminate localseach
-        p.terminate()
-        p.join()
-
-    """
 
 
 if __name__ == "__main__":
     main(sys.argv[1:])
+
+
 

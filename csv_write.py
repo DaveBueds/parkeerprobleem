@@ -3,7 +3,6 @@ from Zone import Zone
 from Vehicle import Vehicle
 
 from kostfunctie import kostfunctie
-from localSearch import localSearch
 
 
 unassignedRequests = []

@@ -3,6 +3,7 @@ from Zone import Zone
 from Vehicle import Vehicle
 
 def kostfunctie(requests, vehicles):
+    print("\n---Kostfunctie: ---\n")
     totaleKost = 0
 
     for index, req in enumerate(requests):
