@@ -15,6 +15,11 @@ def optimize(startOpl, timelimit):
     vehicles = startOpl[2]
     aantalDagen = startOpl[3]
 
+    bestRequests = startOpl[0]
+    bestZones = startOpl[1]
+    bestVehicles = startOpl[2]
+    bestAantalDagen = startOpl[3]
+
     aantalRequests = len(requests)-1
     print("aantal requests =", aantalRequests)
 
@@ -28,13 +33,13 @@ def optimize(startOpl, timelimit):
 
     # selecteer random request en geef deze een ander voertuig
     # controleer dan of oplossing feasible is
-    count = 0
-    while count < 1:
-    #while time.time() < timeout: #counter die random volgende requests selecteert en wijzigt
-        count = count + 1
+    #count = 0
+    #while count < 1:
+    while time.time() < timeout: #counter die random volgende requests selecteert en wijzigt
+        #count = count + 1
 
-        #randomRequest = requests[randint(0, aantalRequests)] #selecteer random request
-        randomRequest = requests[4] #req 5
+        randomRequest = requests[randint(0, aantalRequests)] #selecteer random request
+        #randomRequest = requests[4] #req 5
         oldVehicles = deepcopy(vehicles)
         oldRequests = deepcopy(requests)
         oldZones = deepcopy(zones)
@@ -54,6 +59,8 @@ def optimize(startOpl, timelimit):
         # verander voor random request zijn voertuig
         # lus over request zijn vehicle list
         bestcarscore = cur
+
+
         for index, auto in enumerate(randomRequest.verhicleList):
             gekozenWagen = vehicles[auto]
             bezetVan = randomRequest.startTijd
@@ -85,6 +92,10 @@ def optimize(startOpl, timelimit):
             else:
                 print("-------------SCORE BETER------------")
                 cur = val
+                bestRequests = requests
+                bestZones = zones
+                bestVehicles = vehicles
+                bestAantalDagen = aantalDagen
 
             for auto in vehicles:
                 print("auto: ", auto.vehicle, "bezet van: ", auto.bezetVan, "bezet tot: ", auto.bezetTot,
@@ -105,13 +116,17 @@ def optimize(startOpl, timelimit):
         else:
             print("-------------SCORE BETER------------")
             cur = val
+            bestRequests = requests
+            bestZones = zones
+            bestVehicles = vehicles
+            bestAantalDagen = aantalDagen
 
         for auto in vehicles:
             print("auto: ", auto.vehicle, "bezet van: ", auto.bezetVan, "bezet tot: ", auto.bezetTot,
                   "is bezet: ", auto.wagenBezet, "zone", auto.zone)
 
 
-    return [requests, zones, vehicles, aantalDagen]
+    return [bestRequests, bestZones, bestVehicles,  bestAantalDagen]
 
 
 
