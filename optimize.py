@@ -28,10 +28,13 @@ def optimize(startOpl, timelimit):
 
     # selecteer random request en geef deze een ander voertuig
     # controleer dan of oplossing feasible is
-    while time.time() < timeout: #counter die random volgende requests selecteert en wijzigt
+    count = 0
+    while count < 1:
+    #while time.time() < timeout: #counter die random volgende requests selecteert en wijzigt
+        count = count + 1
 
-        randomRequest = requests[randint(0, aantalRequests)] #selecteer random request
-        #randomRequest = requests[8] #req 5
+        #randomRequest = requests[randint(0, aantalRequests)] #selecteer random request
+        randomRequest = requests[4] #req 5
         oldVehicles = deepcopy(vehicles)
         oldRequests = deepcopy(requests)
         oldZones = deepcopy(zones)
@@ -43,22 +46,27 @@ def optimize(startOpl, timelimit):
         print("_________________________________________________")
         initieleOpl = False
 
+
         # sorteer request lijst op tijd (van klein naar groot)
         requests.sort(key=lambda x: x.startTijd, reverse=False)
 
-        # verander voor random request zijn voertuig
 
+        # verander voor random request zijn voertuig
         # lus over request zijn vehicle list
+        bestcarscore = cur
         for index, auto in enumerate(randomRequest.verhicleList):
             gekozenWagen = vehicles[auto]
             bezetVan = randomRequest.startTijd
             bezetTot = randomRequest.startTijd + randomRequest.duurTijd
+
             print('auto', gekozenWagen.vehicle)
             gekozenWagen.wagenOpSlot(bezetVan, bezetTot)
             gekozenWagen.vehicleToZone(randomRequest)
             randomRequest.reqToVehicle(gekozenWagen.vehicle)
 
+            # lus voor wagens vrij te maken van vorige requests
             for auto in vehicles:
+                #print("auto: ", auto.vehicle, "bezet van: ", auto.bezetVan, "bezet tot: ", auto.bezetTot, "is bezet: ", auto.wagenBezet, "zone", auto.zone)
                 if auto.vehicle == gekozenWagen.vehicle:
                     pass
                 else:
@@ -66,9 +74,21 @@ def optimize(startOpl, timelimit):
                 print("auto: ", auto.vehicle, "bezet van: ", auto.bezetVan, "bezet tot: ", auto.bezetTot,
                       "is bezet: ", auto.wagenBezet, "zone", auto.zone)
 
+            checkFeasible(requests, zones, vehicles, randomRequest)
+            val = kostfunctie(requests,vehicles)
+            print("Kost tussendoor:", val)
 
-            feasible = checkFeasible(requests, zones, vehicles, randomRequest)
+            # FIXME hier zit iets dubbel :(
+            if val >= cur:  # indien score niet beter
+                print("------------- SCORE,", val, " NIET BETER DAN", cur, ": RESET ------------")
+                # reset alles
+            else:
+                print("-------------SCORE BETER------------")
+                cur = val
 
+            for auto in vehicles:
+                print("auto: ", auto.vehicle, "bezet van: ", auto.bezetVan, "bezet tot: ", auto.bezetTot,
+                      "is bezet: ", auto.wagenBezet, "zone", auto.zone)
             #break #MOMENTEEL ENKEL VOOR AUTO 2!!
 
 
@@ -77,12 +97,14 @@ def optimize(startOpl, timelimit):
 
 
         if val >= cur: # indien score niet beter
+            print("------------- SCORE,",val," NIET BETER DAN",cur,": RESET ------------")
             #reset alles
             requests = oldRequests
             vehicles = oldVehicles
             zones = oldZones
         else:
             print("-------------SCORE BETER------------")
+            cur = val
 
         for auto in vehicles:
             print("auto: ", auto.vehicle, "bezet van: ", auto.bezetVan, "bezet tot: ", auto.bezetTot,
@@ -108,9 +130,11 @@ def checkFeasible(requests, zones, vehicles, randomRequest):
 
         if req.id == randomRequest.id:
             print("gelijk", req.id)
+            auto = vehicles[req.toegewezenVoertuig]
+            print("auto: ", auto.vehicle, "bezet van: ", auto.bezetVan, "bezet tot: ", auto.bezetTot,
+                  "is bezet: ", auto.wagenBezet, "zone", auto.zone)
 
         else:
-            # maakOplossing(randomRequest, vehicles, zones, initieleOpl)
             print("else", req.id)
 
             if controleOfReqWagenHeeft(req):
@@ -161,7 +185,7 @@ def checkFeasible(requests, zones, vehicles, randomRequest):
                                     print("Wagen staat NIET in buurzone", buur)
                                     req.reqToVehicle(None)
                                     # ga verder in lijst van wagens als er nog wagens zijn
-                            break
+                            continue
                     else:
                         print("WAGEN", car.vehicle, "BEZET VAN: ", car.bezetVan, "TOT", car.bezetTot)
 

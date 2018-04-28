@@ -15,6 +15,9 @@ def writeCSV(filenaam, obj):
     #SCHRIJVEN van de csv file
     fw = open(filenaam, "r+")
 
+    fw.seek(0)  # <- This is the missing piece
+    fw.truncate()
+
     kost = str(kostfunctie(requests, vehicles))
     koststring = str(kost) + "\n"
     fw.writelines(koststring)
