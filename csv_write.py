@@ -13,7 +13,7 @@ def writeCSV(filenaam, obj):
     vehicles = obj[2]
 
     #SCHRIJVEN van de csv file
-    fw = open(filenaam, "r+")
+    fw = open(filenaam, "a+")
 
     fw.seek(0)  # <- This is the missing piece
     fw.truncate()
