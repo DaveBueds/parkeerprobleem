@@ -2,6 +2,7 @@
 # coding=utf-8
 
 import sys, optparse, time
+import os.path
 
 from time import sleep
 
@@ -12,6 +13,7 @@ from csv_read import readCSV
 from csv_write import writeCSV
 from initOplossing import initOplossing
 from optimize import optimize
+from optimize import optimizeTabu
 
 
 from Request import Request
@@ -43,9 +45,12 @@ def main(argv):
                       help="[OPTIONAL] het maximum aantal threads dat je algoritme mag gebruiken, default=1")
 
     (options, args) = parser.parse_args()
-
     inputfile = options.input
-    outputfile = options.outputfile
+    if (os.path.isfile(options.outputfile)):
+        outputfile = options.outputfile
+    else:
+        print('Output file is niet bestaand')
+        sys.exit()
     timelimit = options.timelimit
     randomseeds = options.randomseeds
     numthreads = options.numthreads
@@ -81,12 +86,16 @@ def main(argv):
     print("\n" + "Optimaliseren")
     print("-------------------------", "\n")
     # localSearch(startOpl, 60, 300)
-    opt = optimize(startOpl, timelimit)
 
+    #opt = optimize(startOpl, timelimit)
+
+    tabuopt = optimizeTabu(startOpl, timelimit)
     print("\n" + "Schrijven naar csv")
+
     filenaamWrite = outputfile
     print("-------------------------", "\n")
-    writeCSV(filenaamWrite, opt)
+    #writeCSV(filenaamWrite, opt)
+    writeCSV(filenaamWrite, tabuopt)
 
     end = time.time()
     print("Tijd verstreken: ", end - start)

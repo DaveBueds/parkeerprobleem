@@ -9,6 +9,80 @@ from initOplossing import controleOfReqWagenHeeft
 from copy import deepcopy
 
 
+#Tabu Search algoritme
+def optimizeTabu(startOpl, timelimit): #tabu search werkt nog steeds op het toy bestand, de rest niet meer
+    request = startOpl[0]
+    zone = startOpl[1]
+    vehicle = startOpl[2]
+    aantalDagen = startOpl[3]
+    aantalRequests = len(request) - 1
+    bestRequest = request
+    bestZone = zone
+    bestVehicle = vehicle
+
+    tabuList = []
+    # alle solutions bereken en in lijst zetten
+    sol = kostfunctie(request, vehicle)
+    bestSol = sol
+
+    tabuList.append(bestSol)
+    timeout = time.time() + timelimit
+    #blijf doorzoeken tot tijdslimiet
+    while time.time() < timeout:
+        oldVeh = deepcopy(vehicle)
+        oldZone = deepcopy(zone)
+        oldReq = deepcopy(request)
+
+        #Verzamel de verschillende neighbours, de beste boven, schuif de rest door
+        for i, req in enumerate(request): #for lus neemt prio over timeout als deze over te groot aantal requests itereert
+            curRequest = request[i]
+
+            #na gaan of het mogelijk is om de request aan te passen
+            request.sort(key=lambda x: x.startTijd, reverse=False)
+
+            #Tijdsspan van autos na kijken
+            for index, auto in enumerate(curRequest.verhicleList):
+                gekozenWagen = vehicle[auto]
+                bezetVan = curRequest.startTijd
+                bezetTot = curRequest.startTijd + curRequest.duurTijd
+                print('auto', gekozenWagen.vehicle)
+                gekozenWagen.wagenOpSlot(bezetVan, bezetTot)
+                gekozenWagen.vehicleToZone(curRequest)
+                curRequest.reqToVehicle(gekozenWagen.vehicle)
+                #los koppelen
+                for auto in vehicle:
+                    if auto.vehicle == gekozenWagen.vehicle:
+                        pass
+                    else:
+                        auto.resetVehicle()  # zodat terug kan gereserveerd worden
+                    print("auto: ", auto.vehicle, "bezet van: ", auto.bezetVan, "bezet tot: ", auto.bezetTot,
+                          "is bezet: ", auto.wagenBezet, "zone", auto.zone)
+
+                checkFeasible(request, zone, vehicle, curRequest)
+            sol = kostfunctie(request, vehicle)
+
+            if bestSol <= sol: #
+                print("nieuwe score", sol)
+                tabuList.insert(0,sol) #zet nieuwe score eerst in lijst
+                #onthoud de oplossing
+                betterRequest = request
+                betterZone = zone
+                betterVehicle = vehicle
+            else: #terug oorspronkelijke lijst
+                print("Behoud huidige")
+                tabuList.append(sol)
+                request = oldReq
+                vehicle = oldVeh
+                zone = oldZone
+            for auto in vehicle:
+                print("auto: ", auto.vehicle, "bezet van: ", auto.bezetVan, "bezet tot: ", auto.bezetTot,
+                  "is bezet: ", auto.wagenBezet, "zone", auto.zone)
+        request = betterRequest #reference voor assign (enkel bij grote csv's)
+        vehicle = betterVehicle
+        zone = betterZone
+
+    return [bestRequest,bestZone,bestVehicle,aantalDagen]
+
 def optimize(startOpl, timelimit):
     requests = startOpl[0]
     zones = startOpl[1]
@@ -95,7 +169,7 @@ def optimize(startOpl, timelimit):
 
 #returned of opl na swap feasible is of niet
 #returned true of false
-def checkFeasible(requests, zones, vehicles, randomRequest):
+def checkFeasible(requests: object, zones: object, vehicles: object, randomRequest: object) -> object:
     print("-------------Feasible------------")
     # sorteer request lijst op tijd (van klein naar groot)
     requests.sort(key=lambda x: x.startTijd, reverse=False)
